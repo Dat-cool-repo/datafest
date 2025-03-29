@@ -1,0 +1,23 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('Technology_Advertising_Media_and_Information_Large.csv')
+df['leasedSF'] = pd.to_numeric(df['leasedSF'], errors='coerce')
+
+demand_over_time = df.groupby('year').agg(
+    deal_count=('leasedSF', 'count'),       # number of leases signed
+    total_leasedSF=('leasedSF', 'sum'),     # total SF leased
+    avg_lease_size=('leasedSF', 'mean')     # optional: average lease size
+).reset_index()
+
+plt.figure(figsize=(10, 6))
+plt.plot(demand_over_time['year'], demand_over_time['total_leasedSF'], marker='o', label='Total Leased SF')
+plt.plot(demand_over_time['year'], demand_over_time['deal_count'], marker='x', linestyle='--', label='Lease Count')
+
+plt.title('Leasing Demand Over Time')
+plt.xlabel('Year')
+plt.ylabel('Total Leased SF / Lease Count')
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
